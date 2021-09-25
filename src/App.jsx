@@ -7,6 +7,7 @@ export default class App extends Component {
         return (
             <div>
                 <Button type="primary">Primary Button</Button>
+                
                 <Button>Default Button</Button>
                 <Button type="dashed">Dashed Button</Button>
                 <br />
