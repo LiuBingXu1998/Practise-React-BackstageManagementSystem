@@ -1,19 +1,21 @@
 import React, { Component } from 'react';
+import { BrowserRouter, NavLink, Route, Switch, Redirect } from 'react-router-dom';
 
-import { Button } from 'antd';
+import Login from './pages/login/Login';
+import Admin from './pages/admin/Admin';
+
 
 export default class App extends Component {
     render() {
         return (
-            <div>
-                <Button type="primary">Primary Button</Button>
-                
-                <Button>Default Button</Button>
-                <Button type="dashed">Dashed Button</Button>
-                <br />
-                <Button type="text">Text Button</Button>
-                <Button type="link">Link Button</Button>
-            </div>
+            <BrowserRouter>
+                <Switch>
+                    {/* 注册路由 */}
+                    <Route path="/login" component={Login}></Route>
+                    <Route path="/admin" component={Admin}></Route>
+                    <Redirect to="/login" />
+                </Switch>
+            </BrowserRouter>
         )
     }
 }
