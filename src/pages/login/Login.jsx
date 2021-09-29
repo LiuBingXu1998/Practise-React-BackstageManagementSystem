@@ -3,17 +3,16 @@ import { Form, Input, Button } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 
 import imgLogo from "./images/logo.png";
-
 import "./Login.less";
 
 /**
- * 登入的路由组件
+ * 登陆的路由组件
  */
 export default class Login extends Component {
     /**
      * 规则校验器
-     * @param {*} rule 规则
-     * @param {*} value 输入的值
+     * @param {Object} rule 规则
+     * @param {String} value 输入的值
      */
     handleValidator = (rule, value) => {
         const Length = value.length;
@@ -34,11 +33,12 @@ export default class Login extends Component {
     }
 
     /**
-     * need todo
+     * 提交表单时的处理
+     * @param {Object} values 
      */
-    onFinish = () => {
-
-    }
+    onFinish = (values) => {
+        // todo 发送ajax请求，验证登陆账户和密码
+    };
 
     render() {
         return (
