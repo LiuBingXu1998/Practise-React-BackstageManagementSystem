@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Form, Input, Button } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 
+import { reqLogin } from "../../api/index.js";
 import imgLogo from "./images/logo.png";
 import "./Login.less";
 
@@ -37,7 +38,15 @@ export default class Login extends Component {
      * @param {Object} values 
      */
     onFinish = (values) => {
-        // todo 发送ajax请求，验证登陆账户和密码
+        // 发送ajax请求，验证登陆账户和密码
+        const { username, password } = values;
+        reqLogin(username, password).then(respone => {
+            // todo 请求成功时做出的响应
+            console.log("成功了", respone);
+        }).catch(error => {
+            // todo 请求失败时做出的响应
+            console.log("失败了", error);
+        });
     };
 
     render() {
