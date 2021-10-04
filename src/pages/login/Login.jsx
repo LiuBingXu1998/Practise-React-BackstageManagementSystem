@@ -1,8 +1,11 @@
 import React, { Component } from "react";
+import { Redirect } from "react-router";
 import { Form, Input, Button, message } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 
 import { reqLogin } from "../../api/index.js";
+import memoryUtils from "../../utils/memoryUtils.js";
+import storageUtils from "../../utils/storageUtils.js";
 
 import imgLogo from "./images/logo.png";
 import "./Login.less";
@@ -48,6 +51,9 @@ export default class Login extends Component {
             if (result.status === 0) {
                 // 登录成功
                 message.success("登录成功！你好" + result.data.username + "!");
+                // 保存用户信息到内存和本地
+                memoryUtils.user = result.data;
+                storageUtils.saveUser(result.data);
                 // 转跳到管理界面
                 this.props.history.replace(`/admin`);
             } else {
@@ -58,6 +64,12 @@ export default class Login extends Component {
     );
 
     render() {
+        // 如果用户已经登录，自动跳转到admin页面
+        const user = memoryUtils.user;
+        if(user && user._id) {
+            return <Redirect to="/admin"/>
+        }
+
         return (
             <div className="login">
 
