@@ -1,8 +1,9 @@
 import React, { Component } from "react";
-import { Form, Input, Button } from 'antd';
+import { Form, Input, Button, message } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 
 import { reqLogin } from "../../api/index.js";
+
 import imgLogo from "./images/logo.png";
 import "./Login.less";
 
@@ -34,20 +35,27 @@ export default class Login extends Component {
     }
 
     /**
-     * 提交表单时的处理
+     * 提交表单时的处理（发送ajax请求，验证登陆账户和密码）
      * @param {Object} values 
      */
-    onFinish = (values) => {
-        // 发送ajax请求，验证登陆账户和密码
-        const { username, password } = values;
-        reqLogin(username, password).then(respone => {
-            // todo 请求成功时做出的响应
-            console.log("成功了", respone);
-        }).catch(error => {
-            // todo 请求失败时做出的响应
-            console.log("失败了", error);
-        });
-    };
+    onFinish = (
+        async (values) => {
+            // 获取用户名和密码
+            const { username, password } = values;
+            const result = await reqLogin(username, password);
+
+            // 请求成功时做出的响应
+            if (result.status === 0) {
+                // 登录成功
+                message.success("登录成功！你好" + result.data.username + "!");
+                // 转跳到管理界面
+                this.props.history.replace(`/admin`);
+            } else {
+                // 登录失败
+                message.error("登陆失败！用户名或密码不正确！");
+            }
+        }
+    );
 
     render() {
         return (
