@@ -9,7 +9,6 @@ import {
     AreaChartOutlined,
     UnorderedListOutlined,
     ToolOutlined,
-    WindowsOutlined,
     BarChartOutlined,
     LineChartOutlined,
     PieChartOutlined
@@ -26,8 +25,7 @@ export default class LeftNav extends Component {
     render() {
         return (
             <div className="left-nav">
-                {/* todo添加路由指向 */}
-                <Link to="" className="header-logo">
+                <Link to="/admin/home" className="header-logo">
                     <img src={logo} alt="尚硅谷logo" />
                     <h1>硅谷后台</h1>
                 </Link>
@@ -38,31 +36,38 @@ export default class LeftNav extends Component {
                     theme="dark"
                 >
                     <Menu.Item key="1" icon={<HomeOutlined />}>
-                        首页
+                        <Link to="/admin/home">首页</Link>
                     </Menu.Item>
 
                     <SubMenu key="sub1" icon={<AppstoreOutlined />} title="商品">
-                        <Menu.Item key="2" icon={<UnorderedListOutlined />}>品类管理</Menu.Item>
-                        <Menu.Item key="3" icon={<ToolOutlined />}>商品管理</Menu.Item>
+                        <Menu.Item key="2" icon={<UnorderedListOutlined />}>
+                            <Link to="/admin/category">品类管理</Link>
+                        </Menu.Item>
+
+                        <Menu.Item key="3" icon={<ToolOutlined />}>
+                            <Link to="/admin/product">商品管理</Link>
+                        </Menu.Item>
                     </SubMenu>
 
                     <Menu.Item key="4" icon={<UserOutlined />}>
-                        用户管理
+                        <Link to="/admin/user">用户管理</Link>
                     </Menu.Item>
 
                     <Menu.Item key="5" icon={<SafetyCertificateOutlined />}>
-                        角色管理
+                        <Link to="/admin/role">角色管理</Link>
                     </Menu.Item>
 
                     <SubMenu key="sub2" icon={<AreaChartOutlined />} title="图形图表">
-                        <Menu.Item key="6" icon={<BarChartOutlined />}>柱形图</Menu.Item>
-                        <Menu.Item key="7" icon={<LineChartOutlined />}>折线图</Menu.Item>
-                        <Menu.Item key="8" icon={<PieChartOutlined />}>饼图</Menu.Item>
+                        <Menu.Item key="6" icon={<BarChartOutlined />}>
+                            <Link to="/admin/charts/bar">柱形图</Link>
+                        </Menu.Item>
+                        <Menu.Item key="7" icon={<LineChartOutlined />}>
+                            <Link to="/admin/charts/line">折线图</Link>
+                        </Menu.Item>
+                        <Menu.Item key="8" icon={<PieChartOutlined />}>
+                            <Link to="/admin/charts/pie">饼图</Link>
+                        </Menu.Item>
                     </SubMenu>
-
-                    <Menu.Item key="5" icon={<WindowsOutlined />}>
-                        订单管理
-                    </Menu.Item>
                 </Menu>
             </div>
         )
