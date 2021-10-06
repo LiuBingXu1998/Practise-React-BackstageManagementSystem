@@ -1,5 +1,7 @@
 // 这个模块封装了项目用到的所有AJAX请求
 import ajax from "./ajax";
+import jsonp from "jsonp";
+import { message } from "antd";
 
 // 基础请求地址
 const BASE = "";
@@ -18,3 +20,31 @@ export const reqLogin = (username, password) => ajax(BASE + "/login", { username
  * @returns 
  */
 export const reqAddUser = (user) => ajax(BASE + "/manage/user/add", user, "POST");
+
+/**
+ * 请求天气信息
+ * @param {Number} cityCode 
+ * @returns 
+ */
+export const reqWeather = (cityCode = 320900) => {
+    return new Promise((resolve, reject) => {
+        // 准备url
+        const url = `https://restapi.amap.com/v3/weather/weatherInfo?key=e0127f55b9ce6cce676491ccaf142b19&city=${cityCode}&extensions=base`;
+        // 发送jsonp请求
+        jsonp(url, {}, (err, data) => {
+            // 请求成功
+            if (!err) {
+                if (data.info === "OK") {
+                    const { weather } = data.lives[0];
+                    resolve({ weather });
+                } else {
+                    message.error("获取天气数据失败！");
+                    console.log(data);
+                }
+            } else {
+                // 请求失败,打印输出
+                console.log(err);
+            }
+        });
+    })
+}

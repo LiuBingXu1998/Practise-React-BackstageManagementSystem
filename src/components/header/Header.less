@@ -1,4 +1,47 @@
-.header{
+.header {
+    position: relative;
     height: 80px;
-    background-color: blue;
+    background-color: #fff;
+
+    .header-top {
+        height: 40px;
+        line-height: 40px;
+        text-align: right;
+        padding-right: 20px;
+        border-bottom: 1px solid rgb(46, 192, 109);
+    }
+
+    .header-bottom {
+        display: flex;
+        line-height: 40px;
+        justify-content: space-between;
+
+        .nowPage {
+            font-size: 20px;
+            margin-left: 50px;
+            &::after {
+                content: "";
+                position: absolute;
+                left: 50px;
+                top: 80px;
+                border-top: 20px solid rgb(255, 255, 255);
+                border-bottom: 20px solid transparent;
+                border-right: 20px solid transparent;
+                border-left: 20px solid transparent;
+            }
+        }
+
+        .timeAndWeather {
+            margin-right: 20px;
+            .time {
+                margin-right: 5px;
+            }
+        
+            .weatherFont {
+                margin-left: 5px;
+            }
+        }
+    }
 }
+
+
