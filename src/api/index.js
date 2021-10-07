@@ -17,9 +17,32 @@ export const reqLogin = (username, password) => ajax(BASE + "/login", { username
 /**
  * 添加用户请求
  * @param {Object} user 用户对象
- * @returns 
+ * @returns 返回Promise对象
  */
 export const reqAddUser = (user) => ajax(BASE + "/manage/user/add", user, "POST");
+
+/**
+ * 请求分类列表
+ * @param {Object} parentId 
+ * @returns 返回Promise对象
+ */
+export const reqGetCategorys = (parentId) => ajax(BASE + "/manage/category/list", { parentId });
+
+/**
+ * 添加分类
+ * @param {String} parentId 
+ * @param {String} categoryName 
+ * @returns 返回Promise对象
+ */
+export const reqAddCategory = (parentId, categoryName) => ajax(BASE + "/manage/category/add", { parentId, categoryName }, "POST");
+
+/**
+ * 更品类名称
+ * @param {String} categoryId 
+ * @param {String} categoryName 
+ * @returns 
+ */
+export const reqUpdateCategory = (categoryId, categoryName) => ajax(BASE + "/manage/category/update", {categoryId, categoryName}, "POST");
 
 /**
  * 请求天气信息
@@ -35,8 +58,8 @@ export const reqWeather = (cityCode = 320900) => {
             // 请求成功
             if (!err) {
                 if (data.info === "OK") {
-                    const { weather } = data.lives[0];
-                    resolve({ weather });
+                    const { weather, city } = data.lives[0];
+                    resolve({ weather, city });
                 } else {
                     message.error("获取天气数据失败！");
                     console.log(data);

@@ -18,6 +18,7 @@ const formateDate = timeTools.formateDate;
 class Header extends Component {
     state = {
         currentTime: formateDate(Date.now()),
+        city: "",
         weather: "",
     }
 
@@ -33,11 +34,11 @@ class Header extends Component {
     }
 
     /**
-     * 自动更新天气
+     * 自动更新城市和天气
      */
     upDateWeather = async () => {
-        const { weather } = await reqWeather();
-        this.setState({ weather });
+        const { weather, city } = await reqWeather();
+        this.setState({ weather, city });
     }
 
     /**
@@ -93,7 +94,7 @@ class Header extends Component {
     }
 
     render() {
-        const { currentTime, weather } = this.state;
+        const { currentTime, weather, city } = this.state;
         const user = memoryUtils.user.username;
         const title = this.upDateTitle();
 
@@ -109,6 +110,7 @@ class Header extends Component {
 
                     <div className="timeAndWeather">
                         <span className="time">{currentTime}</span>
+                        <span className="city">{city}</span>
                         <span className="weatherFont">{weather}</span>
                     </div>
                 </div>
