@@ -89,10 +89,24 @@ export default class Category extends Component {
     }
 
     /**
-     * 添加分类 todo
+     * 添加分类
      */
     addCategory = () => {
-        console.log("添加分类");
+        this.state.nowForm.validateFields().then(async (value) => {
+            // 隐藏渲染框
+            this.setState({
+                showStatus: 0,
+            });
+
+            const { choceSort, sortName } = value;
+
+            const result = await reqAddCategory(choceSort, sortName);
+            if (result.status === 0) {
+                // 重新显示新的列表
+                this.getCategorys();
+            }
+        }).catch()
+
     }
 
     /**
@@ -114,23 +128,25 @@ export default class Category extends Component {
     }
 
     /**
-     * 更新分类 todo
+     * 更新分类
      */
-    UpdateCategory = async () => {
-        // 隐藏渲染框
-        this.setState({
-            showStatus: 0,
-        });
+    UpdateCategory = () => {
+        this.state.nowForm.validateFields().then(async (value) => {
+            // 隐藏渲染框
+            this.setState({
+                showStatus: 0,
+            });
 
-        const categoryId = this.state.nowCategory._id;
-        const categoryName = this.state.nowForm.getFieldsValue("updateName").updateName;
+            const categoryId = this.state.nowCategory._id;
+            const categoryName = value.updateName;
 
-        // 发送请求更新分类
-        const result = await reqUpdateCategory(categoryId, categoryName);
-        if (result.status === 0) {
-            // 重新显示新的列表
-            this.getCategorys();
-        }
+            // 发送请求更新分类
+            const result = await reqUpdateCategory(categoryId, categoryName);
+            if (result.status === 0) {
+                // 重新显示新的列表
+                this.getCategorys();
+            }
+        }).catch()
     }
 
     componentDidMount() {
@@ -197,7 +213,11 @@ export default class Category extends Component {
                     cancelText="取消"
                     destroyOnClose={true}
                 >
-                    <AddForm />
+                    <AddForm
+                        categorys={categorys}
+                        parentId={parentId}
+                        setForm={(form) => this.setNowForm(form)}
+                    />
                 </Modal>
 
                 <Modal
