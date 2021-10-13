@@ -50,12 +50,12 @@ class Header extends Component {
         const path = this.props.location.pathname;
         // 遍历比较
         menuList.forEach(item => {
-            // 如果item的key === 当前路径
+            // 如果当前路径包含item的key 
             if (item.key === path) {
                 title = item.title;
             } else if (item.children) {
                 // 查找子item，匹配则取出
-                const cItem = item.children.find(cItem => cItem.key === path)
+                const cItem = item.children.find(cItem => path.search(cItem.key) !== -1)
                 // 如果cItem有值，说明找到了
                 if (cItem) {
                     title = cItem.title;
