@@ -163,8 +163,7 @@ export default class ProductHome extends Component {
         // Card左上角搜索关键字和搜索类型数据
         const { searchName, searchType } = this.state;
 
-        // card左上角标题 
-        // todo 添加功能
+        // card左上角标题
         const cardTitle = (
             <div>
                 <Select
