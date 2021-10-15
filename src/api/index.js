@@ -23,30 +23,57 @@ export const reqAddUser = (user) => ajax(BASE + "/manage/user/add", user, "POST"
 
 /**
  * 请求分类列表
- * @param {Object} parentId 
+ * @param {Object} parentId 父对象ID
  * @returns 返回Promise对象
  */
 export const reqGetCategorys = (parentId) => ajax(BASE + "/manage/category/list", { parentId });
 
 /**
  * 添加分类
- * @param {String} parentId 
- * @param {String} categoryName 
+ * @param {String} parentId     父对象ID
+ * @param {String} categoryName 分类名称
  * @returns 返回Promise对象
  */
 export const reqAddCategory = (parentId, categoryName) => ajax(BASE + "/manage/category/add", { parentId, categoryName }, "POST");
 
 /**
- * 更品类名称
- * @param {String} categoryId 
- * @param {String} categoryName 
- * @returns 
+ * 更新品类名称
+ * @param {String} categoryId   父对象ID
+ * @param {String} categoryName 品类名称
+ * @returns 返回Promise对象
  */
-export const reqUpdateCategory = (categoryId, categoryName) => ajax(BASE + "/manage/category/update", {categoryId, categoryName}, "POST");
+export const reqUpdateCategory = (categoryId, categoryName) => ajax(BASE + "/manage/category/update", { categoryId, categoryName }, "POST");
+
+/**
+ * 获取商品分页列表
+ * @param {Number} pageNum  页码
+ * @param {Number} pageSize 每页数据数量
+ * @returns 返回Promise对象
+ */
+export const reqProducts = (pageNum, pageSize) => ajax(BASE + "/manage/product/list", { pageNum, pageSize },);
+
+/**
+ * 搜索产品分页列表
+ * @param {Number} pageNum     页码
+ * @param {Number} pageSize    每页数据数量
+ * @param {String} searchName  搜索的关键字
+ * @param {String} searchType  搜索类型(限制搜索类型为:productName/productDesc)
+ * @returns 返回Promise对象
+ */
+export const reqSearchProducts = (pageNum, pageSize, searchName, searchType) => {
+    // 对传入的参数进行封装对象处理
+    const obj = {
+        pageNum,
+        pageSize,
+        [searchType]: searchName,
+    }
+    // 发送ajax请求
+    return ajax(BASE + "/manage/product/search", obj);
+};
 
 /**
  * 请求天气信息
- * @param {Number} cityCode 
+ * @param {Number} cityCode 城市代码
  * @returns 
  */
 export const reqWeather = (cityCode = 320900) => {
