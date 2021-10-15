@@ -1,18 +1,20 @@
 import React, { Component } from 'react';
+import { withRouter } from "react-router-dom";
 import { PlusOutlined } from "@ant-design/icons";
 import { Card, Select, Input, Button, Table, message } from "antd";
 
-import { reqProducts, reqSearchProducts } from "../../api/index";
+import { reqProducts, reqSearchProducts, reqUpdateStatus } from "../../api/index";
 import { PAGE_SIZE } from "../../utils/constants";
 import LinkButton from '../../components/linkButton/LinkButton';
 
 const { Option } = Select;
 
-export default class ProductHome extends Component {
-    // constructor(props) {
-    //     super(props);
+class ProductHome extends Component {
+    constructor(props) {
+        super(props);
 
-    // }
+        this.pageNum = 1; // 当前显示的页码
+    }
 
     state = {
         columns: [],              // Table表单名称
@@ -25,7 +27,6 @@ export default class ProductHome extends Component {
 
     /**
      * 初始化Table列表名称
-     * todo 添加动态
      */
     initColums = () => {
         this.setState({
@@ -49,13 +50,15 @@ export default class ProductHome extends Component {
                 },
                 {
                     title: '状态',
-                    dataIndex: 'status',
-                    // status为当前表格内的值
-                    render: (status) => {
+                    // object为当前表格所在行对象
+                    render: (object) => {
+                        const { status, _id } = object;
                         return (
                             <div>
-                                <Button type="primary">上架</Button>
-                                <span style={{ margin: "0 0 0 15px" }}>待售</span>
+                                <Button type="primary" onClick={this.handleUpDownProductOnClick(_id, status)}>
+                                    {status === 1 ? "下架" : "上架"}
+                                </Button>
+                                <span style={{ margin: "0 0 0 15px" }}>{status === 1 ? "在售" : "已下架"}</span>
                             </div>
                         )
                     },
@@ -67,7 +70,7 @@ export default class ProductHome extends Component {
                     render: (object) => {
                         return (
                             <div>
-                                <LinkButton>详情</LinkButton>
+                                <LinkButton onClick={this.handleDetailOnClick(object)}>详情</LinkButton>
                                 <LinkButton>修改</LinkButton>
                             </div>
                         )
@@ -83,6 +86,9 @@ export default class ProductHome extends Component {
      * @param {Number} pageNum 页码
      */
     getDataSource = async (pageNum) => {
+        // 保存当前显示页码
+        this.pageNum = pageNum;
+
         let result;
 
         // 从状态栏中获取搜索的关键字和搜索类型
@@ -154,6 +160,31 @@ export default class ProductHome extends Component {
         this.setState({ TableLoading: false });
     }
 
+    /**
+     * 监听详情按钮onClick事件
+     * @param {Object} object 当前表格所在行对象
+     */
+    handleDetailOnClick = (object) => {
+        this.props.history.push(`/admin/product/detail`, { object });
+    }
+
+    /**
+     * 监听上下架按钮onClick事件
+     * @param {String} productId 商品ID
+     * @param {Number} status    商品状态
+     */
+    handleUpDownProductOnClick = async (productId, status) => {
+        // 更改status状态
+        status === 1 ? status = 2 : status = 1;
+
+        const result = await reqUpdateStatus(productId, status);
+        if (result.status === "0") {
+            message.success("更新商品状态成功！");
+            // 更新页面
+            this.getDataSource(this.pageNum);
+        }
+    }
+
     componentDidMount() {
         this.initColums();       // 初始化Table列表名称
         this.getDataSource(1);   // 获取指定页码Table数据
@@ -216,3 +247,5 @@ export default class ProductHome extends Component {
         )
     }
 }
+
+export default withRouter(ProductHome);

@@ -25,8 +25,11 @@ class LeftNav extends Component {
     render() {
         // 获取当前请求路径
         const path = this.props.location.pathname;
+
         // 获取需要展开的列表
         const openKey = this.getOpenKey(path);
+        // 获取需要被选中的列表
+        const selectKey = this.selectKey(path);
 
         return (
             <div className="left-nav">
@@ -38,7 +41,7 @@ class LeftNav extends Component {
                 <Menu
                     mode="inline"
                     theme="dark"
-                    selectedKeys={[path]}
+                    selectedKeys={[selectKey]}
                     defaultOpenKeys={[openKey]}
                 >
                     <Menu.Item key="/admin/home" icon={<HomeOutlined />}>
@@ -93,10 +96,27 @@ class LeftNav extends Component {
 
         if (path.search(charts) !== -1) {
             return result = "/charts";
-        }else if (path.search(productsOne) !== -1 || path.search(peoductsTwo) !== -1) {
+        } else if (path.search(productsOne) !== -1 || path.search(peoductsTwo) !== -1) {
             return result = "/products";
-        }else {
+        } else {
             return result;
+        }
+    }
+
+    /**
+     * 获取需要展开的列表对应的key
+     * @param {String} path 当前路径
+     * @returns {String} result 当前选中的key
+     */
+    selectKey = (path) => {
+        let result = "";
+
+        const products = "product";
+
+        if (path.search(products) !== -1) {
+            return result = "/admin/product";
+        } else {
+            return result = path;
         }
     }
 }

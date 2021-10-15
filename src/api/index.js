@@ -45,12 +45,19 @@ export const reqAddCategory = (parentId, categoryName) => ajax(BASE + "/manage/c
 export const reqUpdateCategory = (categoryId, categoryName) => ajax(BASE + "/manage/category/update", { categoryId, categoryName }, "POST");
 
 /**
+ * 根据分类ID获取对应的分类对象
+ * @param {String} categoryId 分类ID
+ * @returns 返回Promise对象
+ */
+export const reqCategory = (categoryId) => ajax(BASE + "/manage/category/info", { categoryId });
+
+/**
  * 获取商品分页列表
  * @param {Number} pageNum  页码
  * @param {Number} pageSize 每页数据数量
  * @returns 返回Promise对象
  */
-export const reqProducts = (pageNum, pageSize) => ajax(BASE + "/manage/product/list", { pageNum, pageSize },);
+export const reqProducts = (pageNum, pageSize) => ajax(BASE + "/manage/product/list", { pageNum, pageSize });
 
 /**
  * 搜索产品分页列表
@@ -72,9 +79,17 @@ export const reqSearchProducts = (pageNum, pageSize, searchName, searchType) => 
 };
 
 /**
+ * 更新商品状态(上架/下架)
+ * @param {*} productId 商品Id
+ * @param {*} status    商品状态 (1在售 / 2已下架)
+ * @returns 返回Promise对象
+ */
+export const reqUpdateStatus = (productId, status) => ajax(BASE + "/manage/product/updateStatus", { productId, status }, "POST");
+
+/**
  * 请求天气信息
  * @param {Number} cityCode 城市代码
- * @returns 
+ * @returns 返回Promise对象
  */
 export const reqWeather = (cityCode = 320900) => {
     return new Promise((resolve, reject) => {
