@@ -7,9 +7,6 @@ import LinkButton from '../../components/linkButton/LinkButton';
 import { BASE_IMG_URL } from "../../utils/constants";
 import { reqCategory } from "../../api/index"
 
-/**
- * todo 可能存在问题constructor中没有办法获取数据
- */
 class ProductDetail extends Component {
     state = {
         cName1: "", // 一级分类

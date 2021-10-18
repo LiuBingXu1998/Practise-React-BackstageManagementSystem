@@ -55,7 +55,7 @@ class ProductHome extends Component {
                         const { status, _id } = object;
                         return (
                             <div>
-                                <Button type="primary" onClick={this.handleUpDownProductOnClick(_id, status)}>
+                                <Button type="primary" onClick={() => this.handleUpDownProductOnClick(_id, status)}>
                                     {status === 1 ? "下架" : "上架"}
                                 </Button>
                                 <span style={{ margin: "0 0 0 15px" }}>{status === 1 ? "在售" : "已下架"}</span>
@@ -70,8 +70,8 @@ class ProductHome extends Component {
                     render: (object) => {
                         return (
                             <div>
-                                <LinkButton onClick={this.handleDetailOnClick(object)}>详情</LinkButton>
-                                <LinkButton>修改</LinkButton>
+                                <LinkButton onClick={() => this.handleDetailOnClick(object)}>详情</LinkButton>
+                                <LinkButton onClick={() => this.handleUpdateOnClick(object)}>修改</LinkButton>
                             </div>
                         )
                     },
@@ -169,6 +169,14 @@ class ProductHome extends Component {
     }
 
     /**
+     * 监听修改按钮onClick事件
+     * @param {Object} object 当前表格所在行对象
+     */
+    handleUpdateOnClick = (object) => {
+        this.props.history.push(`/admin/product/addUpdate`, object)
+    }
+
+    /**
      * 监听上下架按钮onClick事件
      * @param {String} productId 商品ID
      * @param {Number} status    商品状态
@@ -183,6 +191,13 @@ class ProductHome extends Component {
             // 更新页面
             this.getDataSource(this.pageNum);
         }
+    }
+
+    /**
+     * 监听添加商品按钮onClick事件
+     */
+    handleAddProductOnClick = () => {
+        this.props.history.push(`/admin/product/addUpdate`);
     }
 
     componentDidMount() {
@@ -218,9 +233,8 @@ class ProductHome extends Component {
         )
 
         // card右上角按钮
-        // todo 添加功能 
         const cardExtra = (
-            <Button type="primary">
+            <Button type="primary" onClick={this.handleAddProductOnClick}>
                 <PlusOutlined />
                 添加商品
             </Button>

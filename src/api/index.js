@@ -23,7 +23,7 @@ export const reqAddUser = (user) => ajax(BASE + "/manage/user/add", user, "POST"
 
 /**
  * 请求分类列表
- * @param {Object} parentId 父对象ID
+ * @param {String} parentId 父对象ID
  * @returns 返回Promise对象
  */
 export const reqGetCategorys = (parentId) => ajax(BASE + "/manage/category/list", { parentId });
@@ -85,6 +85,13 @@ export const reqSearchProducts = (pageNum, pageSize, searchName, searchType) => 
  * @returns 返回Promise对象
  */
 export const reqUpdateStatus = (productId, status) => ajax(BASE + "/manage/product/updateStatus", { productId, status }, "POST");
+
+/**
+ * 删除图片请求
+ * @param {string} name 图片名称
+ * @returns 返回Promise对象
+ */
+export const reqDeleteImg = (name) => ajax(BASE + "/manage/img/delete", { name }, "POST");
 
 /**
  * 请求天气信息

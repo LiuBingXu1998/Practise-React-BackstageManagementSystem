@@ -109,14 +109,15 @@ class LeftNav extends Component {
      * @returns {String} result 当前选中的key
      */
     selectKey = (path) => {
-        let result = "";
+        let result;
 
         const products = "product";
 
         if (path.search(products) !== -1) {
             return result = "/admin/product";
         } else {
-            return result = path;
+            result = path;
+            return result;
         }
     }
 }
