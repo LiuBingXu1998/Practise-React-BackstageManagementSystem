@@ -8,23 +8,6 @@ import htmlToDraft from 'html-to-draftjs';
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 
 export default class RichTextEditor extends Component {
-    constructor(props) {
-        super(props);
-
-        const html = this.props.detail;
-
-        if (html) {
-            const contentBlock = htmlToDraft(html);
-            if (contentBlock) {
-                const contentState = ContentState.createFromBlockArray(contentBlock.contentBlocks);
-                const editorState = EditorState.createWithContent(contentState);
-                this.state = {
-                    editorState,
-                };
-            }
-        }
-    }
-
     state = {
         editorState: EditorState.createEmpty(), // 创建一个没有内容的编辑对象
     }
@@ -73,6 +56,25 @@ export default class RichTextEditor extends Component {
      */
     getDetail = () => {
         return draftToHtml(convertToRaw(this.state.editorState.getCurrentContent()));
+    }
+
+    /**
+     * 获取输入框内的数据
+     */
+    getData = () => {
+        const html = this.props.detail;
+        if (html) {
+            const contentBlock = htmlToDraft(html);
+            if (contentBlock) {
+                const contentState = ContentState.createFromBlockArray(contentBlock.contentBlocks);
+                const editorState = EditorState.createWithContent(contentState);
+                this.setState({ editorState });
+            }
+        }
+    }
+
+    componentDidMount() {
+        setTimeout(this.getData, 0);
     }
 
     render() {

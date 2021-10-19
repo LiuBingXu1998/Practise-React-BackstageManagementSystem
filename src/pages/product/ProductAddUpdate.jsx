@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { withRouter } from "react-router-dom";
 import {
     Card,
     Form,
@@ -14,18 +15,20 @@ import PictureWall from "./PictureWall";
 import RichTextEditor from "./RichTextEditor";
 import { reqGetCategorys, reqAddOrUpdateProduct } from "../../api/index";
 
-export default class ProductAddUpdate extends Component {
+class ProductAddUpdate extends Component {
     constructor(props) {
         super(props);
 
         this.pictureWallRef = React.createRef();     // PictureWall组件的ref
         this.richTextEditorRef = React.createRef();  // RichTextEditor组件的ref
+        this.formRef = React.createRef();            // Form表单的初始值
     }
 
     state = {
         cascaderOptions: [],  // Cascader的选择列表
         isUpdate: false,      // 是否是更新的标识
         product: {},          // 当前修改的对象
+        formInitValues: {}    // 表单初始值
     };
 
     /**
@@ -73,10 +76,10 @@ export default class ProductAddUpdate extends Component {
         const result = await reqAddOrUpdateProduct(product);
 
         // 根据结果提示
-        if(result.status === 0) {
+        if (result.status === 0) {
             message.success(`${this.state.isUpdate ? "更新" : "添加"}商品成功！`);
             this.props.history.goBack();
-        }else {
+        } else {
             message.error(`${this.state.isUpdate ? "更新" : "添加"}商品失败！`);
         }
     }
@@ -180,16 +183,40 @@ export default class ProductAddUpdate extends Component {
         this.setState({ cascaderOptions });
     }
 
-    componentDidMount() {
+    async componentDidMount() {
         // 从props.location.state中获取对象(添加：没有值， 更新：有值)
         const product = this.props.location.state;
         // 保存是否是更新的标识,保存product,如果没有保存空对象
-        this.setState({
+        await this.setState({
             isUpdate: !!product,
-            product: product || {}
+            product: product || {},
         }, () => {
-            // 初始化获取分类列表
-            this.getCatergorys("0");
+
+        });
+
+        // 初始化获取分类列表
+        await this.getCatergorys("0");
+
+        const categoryIds = [];   // 用来接收级联分类ID的数组
+        // 进行数据处理
+        if (this.state.isUpdate) {
+            const { pCategoryId, categoryId } = product;
+            // 如果是一级分类的商品
+            if (pCategoryId === "0") {
+                categoryIds.push(categoryId);
+            } else {
+                // 如果是二级分类的商品
+                categoryIds.push(pCategoryId);
+                categoryIds.push(categoryId);
+            }
+        }
+
+        // 设置表单初始值
+        this.formRef.current.setFieldsValue({
+            productName: this.state.product.name,
+            productDesc: this.state.product.desc,
+            productPrice: this.state.product.price,
+            categoryIds: categoryIds,
         });
     }
 
@@ -209,20 +236,6 @@ export default class ProductAddUpdate extends Component {
 
         // 商品分类多选框相关数据
         const { cascaderOptions } = this.state;
-        const categoryIds = [];   // 用来接收级联分类ID的数组
-
-        // 进行数据处理
-        if (isUpdate) {
-            const { pCategoryId, category } = product;
-            // 如果是一级分类的商品
-            if (pCategoryId === "0") {
-                categoryIds.push(category);
-            } else {
-                // 如果是二级分类的商品
-                categoryIds.push(pCategoryId);
-                categoryIds.push(category);
-            }
-        }
 
         // 图片相关数据、详情相关数据
         const { imgs, detail } = product;
@@ -232,13 +245,14 @@ export default class ProductAddUpdate extends Component {
                 <Form
                     labelCol={{ span: 2 }}
                     wrapperCol={{ span: 8 }}
+                    ref={this.formRef}
+                    initialValues={this.state.formInitValues}
                     onFinish={this.handleOnFinish}
                 >
 
                     <Form.Item
                         label="商品名称："
                         name="productName"
-                        initialValue={product.name}
                         rules={[{ required: true, message: '必须输入商品名称！' }]}
                     >
                         <Input placeholder="请输入商品名称" />
@@ -247,7 +261,6 @@ export default class ProductAddUpdate extends Component {
                     <Form.Item
                         label="商品描述："
                         name="productDesc"
-                        initialValue={product.desc}
                         rules={[{ required: true, message: '必须输入商品描述！' }]}
                     >
                         <Input.TextArea
@@ -259,7 +272,6 @@ export default class ProductAddUpdate extends Component {
                     <Form.Item
                         label="商品价格："
                         name="productPrice"
-                        initialValue={product.price}
                         rules={[{ required: true, message: '必须输入商品价格！' },
                         { pattern: /(^[1-9]([0-9]+)?(\.[0-9]{1,2})?$)|(^(0){1}$)|(^[0-9]\.[0-9]([0-9])?$)/, message: "请输入正确的金额！" }]}
                     >
@@ -273,7 +285,6 @@ export default class ProductAddUpdate extends Component {
                     <Form.Item
                         label="商品分类："
                         name="categoryIds"
-                        initialValue={categoryIds}
                         rules={[{ required: true, message: '必须指定商品分类！' }]}
                     >
                         <Cascader
@@ -295,7 +306,9 @@ export default class ProductAddUpdate extends Component {
                         <RichTextEditor ref={this.richTextEditorRef} detail={detail} />
                     </Form.Item>
 
-                    <Form.Item>
+                    <Form.Item
+                        wrapperCol={{ offset: 1, span: 16 }}
+                    >
                         <Button type="primary" htmlType="submit">
                             提交
                         </Button>
@@ -305,3 +318,5 @@ export default class ProductAddUpdate extends Component {
         )
     }
 }
+
+export default withRouter(ProductAddUpdate);

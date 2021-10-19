@@ -91,7 +91,10 @@ export default class PictureWall extends Component {
         return this.state.fileList.map(file => file.name)
     }
 
-    componentDidMount() {
+    /**
+     * 获取文件列表
+     */
+    getFileList = () => {
         let fileList = [];
         const { imgs } = this.props;
 
@@ -107,6 +110,10 @@ export default class PictureWall extends Component {
         }
 
         this.setState({ fileList });
+    }
+
+    componentDidMount() {
+        setTimeout(this.getFileList, 0);
     }
 
     render() {
