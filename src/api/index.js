@@ -94,6 +94,16 @@ export const reqUpdateStatus = (productId, status) => ajax(BASE + "/manage/produ
 export const reqDeleteImg = (name) => ajax(BASE + "/manage/img/delete", { name }, "POST");
 
 /**
+ * 添加商品/修改商品
+ * @param {Object} product 商品对象
+ * @returns 返回Promise对象
+ */
+export const reqAddOrUpdateProduct = (product) => {
+    const URL = product._id ? "update" : "add";
+    return ajax(BASE + "/manage/product/" + URL, product, "POST");
+}
+
+/**
  * 请求天气信息
  * @param {Number} cityCode 城市代码
  * @returns 返回Promise对象

@@ -22,11 +22,7 @@ class ProductDetail extends Component {
 
     async componentDidMount() {
         // 获取路由组建传递过来的数据，object为当前表格所在行对象
-        // const { pCategoryId, categoryId } = this.props.location.state.object;
-
-        // 临时使用，后面需要删除 todo
-        let pCategoryId = "0";
-        let categoryId = "6165593d03765304eaa2f239";
+        const { pCategoryId, categoryId } = this.props.location.state.object;
 
         if (pCategoryId === "0") {
             const result = await reqCategory(categoryId);
@@ -42,15 +38,7 @@ class ProductDetail extends Component {
 
     render() {
         // 获取路由组建传递过来的数据，object为当前表格所在行对象
-        // const { name, desc, price, detail, imgs } = this.props.location.state.object;
-
-        // 临时使用，后面需要删除 todo
-        let name, desc, price, detail, imgs;
-        if (!name) { name = "测试商品"; }
-        if (!desc) { desc = "测试的描述，因为我懒，所以不想写了"; }
-        if (!price) { price = 9999; }
-        if (!detail) { detail = "<span style='color: red'>测试的商品详情，因为我懒，所以不想写了</span>" }
-        if (!imgs) { imgs = [] }
+        const { name, desc, price, detail, imgs } = this.props.location.state.object;
 
         // 获取state数据
         const { cName1, cName2 } = this.state;
@@ -85,7 +73,7 @@ class ProductDetail extends Component {
 
                     <List.Item className="list-item">
                         <span className="left">所属分类：</span>
-                        <span>{cName1} {cName2 ? "---&gt;" + cName2 : ""}</span>
+                        <span>{cName1} {cName2 ? " --> " + cName2 : ""}</span>
                     </List.Item>
 
                     <List.Item className="list-item">

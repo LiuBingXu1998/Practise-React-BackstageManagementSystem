@@ -4,19 +4,22 @@ import {
     Form,
     Input,
     Button,
-    Cascader
+    Cascader,
+    message
 } from "antd";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 
 import LinkButton from '../../components/linkButton/LinkButton';
 import PictureWall from "./PictureWall";
-import { reqGetCategorys } from "../../api/index";
+import RichTextEditor from "./RichTextEditor";
+import { reqGetCategorys, reqAddOrUpdateProduct } from "../../api/index";
 
 export default class ProductAddUpdate extends Component {
     constructor(props) {
         super(props);
 
-        this.pictureWallRef = React.createRef(); // PictureWall组件的ref
+        this.pictureWallRef = React.createRef();     // PictureWall组件的ref
+        this.richTextEditorRef = React.createRef();  // RichTextEditor组件的ref
     }
 
     state = {
@@ -35,13 +38,47 @@ export default class ProductAddUpdate extends Component {
     /**
      * 监听Form提交按钮submit事件
      * @param {Object} object 表单数据对象(自动传入)
-     * todo 添加逻辑,发送ajax请求
      */
-    handleOnFinish = (object) => {
-        console.log("onFinish", object);
-
+    handleOnFinish = async (object) => {
+        // 获取数据
+        const { productName, productDesc, productPrice, categoryIds } = object;
+        let pCategoryId, categoryId;
+        if (categoryIds.length === 1) {
+            pCategoryId = "0";
+            categoryId = categoryIds[0];
+        } else {
+            pCategoryId = categoryIds[0];
+            categoryId = categoryIds[1];
+        }
         // 获取imgs数据
         const imgs = this.pictureWallRef.current.getImgs();
+        // 获取details数据
+        const detail = this.richTextEditorRef.current.getDetail();
+
+        // 封装成product对象
+        const product = {
+            categoryId,
+            pCategoryId,
+            name: productName,
+            desc: productDesc,
+            price: productPrice,
+            detail,
+            imgs,
+        }
+        if (this.state.isUpdate) {
+            product._id = this.state.product._id;
+        }
+
+        // 调用接口请求函数添加/更新数据
+        const result = await reqAddOrUpdateProduct(product);
+
+        // 根据结果提示
+        if(result.status === 0) {
+            message.success(`${this.state.isUpdate ? "更新" : "添加"}商品成功！`);
+            this.props.history.goBack();
+        }else {
+            message.error(`${this.state.isUpdate ? "更新" : "添加"}商品失败！`);
+        }
     }
 
     /**
@@ -187,14 +224,14 @@ export default class ProductAddUpdate extends Component {
             }
         }
 
-        // 图片相关数据
-        const { imgs } = product;
+        // 图片相关数据、详情相关数据
+        const { imgs, detail } = product;
 
         return (
             <Card title={cardTitle} className="product-addUpdate" >
                 <Form
-                    labelCol={{ span: 2, }}
-                    wrapperCol={{ span: 8, }}
+                    labelCol={{ span: 2 }}
+                    wrapperCol={{ span: 8 }}
                     onFinish={this.handleOnFinish}
                 >
 
@@ -250,11 +287,15 @@ export default class ProductAddUpdate extends Component {
                         <PictureWall ref={this.pictureWallRef} imgs={imgs} />
                     </Form.Item>
 
-                    <Form.Item label="商品详情：">
-                        <div>商品详情</div>
+                    <Form.Item
+                        label="商品详情："
+                        labelCol={{ span: 2 }}
+                        wrapperCol={{ span: 20 }}
+                    >
+                        <RichTextEditor ref={this.richTextEditorRef} detail={detail} />
                     </Form.Item>
 
-                    <Form.Item >
+                    <Form.Item>
                         <Button type="primary" htmlType="submit">
                             提交
                         </Button>
