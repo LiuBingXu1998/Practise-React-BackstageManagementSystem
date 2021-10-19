@@ -90,7 +90,6 @@ class ProductHome extends Component {
         this.pageNum = pageNum;
 
         let result;
-
         // 从状态栏中获取搜索的关键字和搜索类型
         const { searchName, searchType } = this.state;
 
@@ -186,7 +185,7 @@ class ProductHome extends Component {
         status === 1 ? status = 2 : status = 1;
 
         const result = await reqUpdateStatus(productId, status);
-        if (result.status === "0") {
+        if (result.status === 0) {
             message.success("更新商品状态成功！");
             // 更新页面
             this.getDataSource(this.pageNum);
