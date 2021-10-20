@@ -5,6 +5,8 @@ import AddForm from './AddForm';
 import AuthForm from "./AuthForm";
 import { PAGE_SIZE } from "../../utils/constants";
 import { reqRoles, reqAddRole, reqUpdateRole } from "../../api/index"
+import memoryUtils from "../../utils/memoryUtils";
+import timeTools from '../../utils/dataUtils';
 
 /**
  * 角色管理路由
@@ -94,6 +96,7 @@ export default class Role extends Component {
         const menus = this.auth.current.getMenus();
         // 更新role
         role.menus = menus;
+        role.auth_name = memoryUtils.user.username;
         // 发送更新请求
         const result = await reqUpdateRole(role);
         if (result.status === 0) {
@@ -153,11 +156,13 @@ export default class Role extends Component {
             },
             {
                 title: '创建时间',
-                dataIndex: 'create_time'
+                dataIndex: 'create_time',
+                render: (create_time) => timeTools.formateDate(create_time),
             },
             {
                 title: '授权时间',
-                dataIndex: 'auth_time'
+                dataIndex: 'auth_time',
+                render: (auth_time) => timeTools.formateDate(auth_time),
             },
             {
                 title: '授权人',
