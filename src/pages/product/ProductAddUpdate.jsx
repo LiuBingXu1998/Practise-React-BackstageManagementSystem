@@ -21,7 +21,7 @@ class ProductAddUpdate extends Component {
 
         this.pictureWallRef = React.createRef();     // PictureWall组件的ref
         this.richTextEditorRef = React.createRef();  // RichTextEditor组件的ref
-        this.formRef = React.createRef();            // Form表单的初始值
+        this.formRef = React.createRef();            // Form表单的ref
     }
 
     state = {

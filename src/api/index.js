@@ -104,6 +104,26 @@ export const reqAddOrUpdateProduct = (product) => {
 }
 
 /**
+ * 获取角色列表
+ * @returns 返回Promise对象
+ */
+export const reqRoles = () => ajax(BASE + "/manage/role/list");
+
+/**
+ * 添加角色
+ * @param {String} roleName 角色名
+ * @returns 返回Promise对象
+ */
+export const reqAddRole = (roleName) => ajax(BASE + "/manage/role/add", { roleName }, "POST");
+
+/**
+ * 更新角色(给角色设置权限)
+ * @param {Object} role 角色对象
+ * @returns 
+ */
+export const reqUpdateRole = (role) => ajax(BASE + "/manage/role/update", role, "POST");
+
+/**
  * 请求天气信息
  * @param {Number} cityCode 城市代码
  * @returns 返回Promise对象
