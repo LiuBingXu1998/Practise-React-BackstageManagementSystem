@@ -6,6 +6,7 @@ import AuthForm from "./AuthForm";
 import { PAGE_SIZE } from "../../utils/constants";
 import { reqRoles, reqAddRole, reqUpdateRole } from "../../api/index"
 import memoryUtils from "../../utils/memoryUtils";
+import storageUtils from "../../utils/storageUtils";
 import timeTools from '../../utils/dataUtils';
 
 /**
@@ -15,7 +16,7 @@ export default class Role extends Component {
     constructor(props) {
         super(props);
 
-        this.form = {};                   // 初始化form表单对
+        this.form = {};                   // 初始化form表单对像
         this.auth = React.createRef();    // authForm组件ref
     }
 
@@ -101,10 +102,18 @@ export default class Role extends Component {
         const result = await reqUpdateRole(role);
         if (result.status === 0) {
             message.success("角色权限修改成功！");
-            // 更新列表
-            // 方法一：this.getRoles();
-            // 方法二： 
-            this.setState({ roles: [...this.state.roles] });
+            // 如果当前更新的是自己角色的权限，强制退出
+            if (role._id === memoryUtils.user.role_id) {
+                message.warning("权限已经被更新，请重新登录！");
+                memoryUtils.user = {};
+                storageUtils.removeUser();
+                this.props.history.replace("/login");
+            } else {
+                // 更新列表
+                // 方法一：this.getRoles();
+                // 方法二： 
+                this.setState({ roles: [...this.state.roles] });
+            }
         } else {
             message.error("角色权限修改失败！");
         }
@@ -181,7 +190,14 @@ export default class Role extends Component {
                     rowKey="_id"
                     columns={columns}
                     dataSource={roles}
-                    rowSelection={{ type: "radio", selectedRowKeys: [role._id] }}
+                    rowSelection={{
+                        type: "radio",
+                        selectedRowKeys: [role._id],
+                        // 选择某个radio的回调
+                        onSelect: (role) => {
+                            this.setState({ role });
+                        }
+                    }}
                     onRow={this.onRow}
                     bordered
                     loading={loadingFlag}

@@ -250,6 +250,7 @@ class ProductHome extends Component {
                     dataSource={dataSource}
                     bordered
                     pagination={{
+                        current: this.pageNum,
                         defaultPageSize: PAGE_SIZE,
                         total: total,
                         onChange: this.handlePageOnChange,

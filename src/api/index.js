@@ -15,11 +15,11 @@ const BASE = "";
 export const reqLogin = (username, password) => ajax(BASE + "/login", { username, password }, "POST");
 
 /**
- * 添加用户请求
+ * 添加/更新用户请求
  * @param {Object} user 用户对象
  * @returns 返回Promise对象
  */
-export const reqAddUser = (user) => ajax(BASE + "/manage/user/add", user, "POST");
+export const reqAddOrUpdateUser = (user) => ajax(BASE + "/manage/user/" + (user._id ? "update" : "add"), user, "POST");
 
 /**
  * 请求分类列表
@@ -122,6 +122,19 @@ export const reqAddRole = (roleName) => ajax(BASE + "/manage/role/add", { roleNa
  * @returns 
  */
 export const reqUpdateRole = (role) => ajax(BASE + "/manage/role/update", role, "POST");
+
+/**
+ * 获取用户列表
+ * @returns 返回Promise对象
+ */
+export const reqUsers = () => ajax(BASE + "/manage/user/list");
+
+/**
+ * 删除用户
+ * @param {String} userId 用户ID
+ * @returns 返回Promise对象
+ */
+export const reqDeleteUser = (userId) => ajax(BASE + "/manage/user/delete", { userId }, "POST");
 
 /**
  * 请求天气信息
