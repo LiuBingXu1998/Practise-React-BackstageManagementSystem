@@ -68,3 +68,10 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+
+### 注意事项
+
+开发下载之后，使用yarn install的方式下载node_modules包，不要使用 npm install 会出错。
+这是因为使用npm install 下载的webpack存在多个版本，会出现包冲突的错误。
+需要yarn帮助统一webpack的版本问题。
