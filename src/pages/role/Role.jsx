@@ -1,18 +1,20 @@
 import React, { Component } from 'react';
 import { Button, Card, Table, Modal, message } from 'antd';
+import { connect } from 'react-redux';
 
 import AddForm from './AddForm';
 import AuthForm from "./AuthForm";
 import { PAGE_SIZE } from "../../utils/constants";
 import { reqRoles, reqAddRole, reqUpdateRole } from "../../api/index"
-import memoryUtils from "../../utils/memoryUtils";
-import storageUtils from "../../utils/storageUtils";
+// import memoryUtils from "../../utils/memoryUtils";
+// import storageUtils from "../../utils/storageUtils";
 import timeTools from '../../utils/dataUtils';
+import { logout } from "../../redux/actions";
 
 /**
  * 角色管理路由
  */
-export default class Role extends Component {
+class Role extends Component {
     constructor(props) {
         super(props);
 
@@ -97,17 +99,19 @@ export default class Role extends Component {
         const menus = this.auth.current.getMenus();
         // 更新role
         role.menus = menus;
-        role.auth_name = memoryUtils.user.username;
+        // role.auth_name = memoryUtils.user.username;
+        role.auth_name = this.props.user.username;
         // 发送更新请求
         const result = await reqUpdateRole(role);
         if (result.status === 0) {
             message.success("角色权限修改成功！");
             // 如果当前更新的是自己角色的权限，强制退出
-            if (role._id === memoryUtils.user.role_id) {
+            if (role._id === this.props.user.role_id) {
                 message.warning("权限已经被更新，请重新登录！");
-                memoryUtils.user = {};
-                storageUtils.removeUser();
-                this.props.history.replace("/login");
+                // memoryUtils.user = {};
+                // storageUtils.removeUser();
+                // this.props.history.replace("/login");
+                this.props.logout();
             } else {
                 // 更新列表
                 // 方法一：this.getRoles();
@@ -233,3 +237,8 @@ export default class Role extends Component {
         )
     }
 }
+
+export default connect(
+    state => ({ user: state.user }),
+    { logout }
+)(Role);

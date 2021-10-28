@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
 import { Link, withRouter } from "react-router-dom";
 import { Menu } from 'antd';
+import { connect } from 'react-redux';
 
-import memoryUtils from '../../utils/memoryUtils';
+// import memoryUtils from '../../utils/memoryUtils';
 import menuList from '../../config/menuConfig';
 import "./LeftNav.less";
 import logo from "../../assets/images/logo.png";
+import { setHeadTitle } from "../../redux/actions"
+import memoryUtils from '../../utils/memoryUtils';
 
 const { SubMenu } = Menu;
 /**
@@ -68,12 +71,18 @@ class LeftNav extends Component {
             if (this.hasAuth(item)) {
                 // 向pre添加<Menu.Item>
                 if (!item.children) {
+                    // 判断item是否是当前对应的item
+                    if (item.key === path || path.indexOf(item.key) === 0) {
+                        // 更新headerTitle状态
+                        this.props.setHeadTitle(item.title);
+                    }
+
                     pre.push((
-                        <Menu.Item key={item.key} icon={item.icon}>
+                        <Menu.Item key={item.key} icon={item.icon} onClick={() => this.props.setHeadTitle(item.title)}>
                             <Link to={item.key}>
                                 <span>{item.title}</span>
                             </Link>
-                        </Menu.Item>
+                        </Menu.Item >
                     ))
                 } else {
 
@@ -108,7 +117,9 @@ class LeftNav extends Component {
      */
     hasAuth = (item) => {
         const key = item.key;
-        const menus = memoryUtils.user.role.menus;
+        // const menus = memoryUtils.user.role.menus;
+        // const username = memoryUtils.user.username;
+        const menus = this.props.user.role.menus;
         const username = memoryUtils.user.username;
 
         // 当前用户是admin / 当前item是公开的 / 当前用户有此item的权限
@@ -116,7 +127,7 @@ class LeftNav extends Component {
             return true;
         } else if (item.children) {
             // 如果当前用户有此item的某个子item的权限
-            return !!item.children.find(child =>  menus.indexOf(child.key)!==-1)
+            return !!item.children.find(child => menus.indexOf(child.key) !== -1)
         }
 
         return false;
@@ -158,4 +169,9 @@ class LeftNav extends Component {
     }
 }
 
-export default withRouter(LeftNav);
+export default connect(
+    (state) => ({ user: state.user }),
+    {
+        setHeadTitle
+    }
+)(withRouter(LeftNav));

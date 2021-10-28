@@ -2,10 +2,12 @@ import React, { Component } from "react";
 import { Redirect } from "react-router";
 import { Form, Input, Button, message } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
+import { connect } from "react-redux";
 
-import { reqLogin } from "../../api/index.js";
-import memoryUtils from "../../utils/memoryUtils.js";
-import storageUtils from "../../utils/storageUtils.js";
+// import { reqLogin } from "../../api/index.js";
+// import memoryUtils from "../../utils/memoryUtils.js";
+// import storageUtils from "../../utils/storageUtils.js";
+import { login } from "../../redux/actions";
 
 import imgLogo from "./images/logo.png";
 import "./Login.less";
@@ -13,7 +15,7 @@ import "./Login.less";
 /**
  * 登陆的路由组件
  */
-export default class Login extends Component {
+class Login extends Component {
     /**
      * 规则校验器
      * @param {Object} rule 规则
@@ -45,30 +47,37 @@ export default class Login extends Component {
         async (values) => {
             // 获取用户名和密码
             const { username, password } = values;
-            const result = await reqLogin(username, password);
+            // const result = await reqLogin(username, password);
+
+            // 调用分发异步action的函数 => 发送登录的异步请求，有了结果后更新状态
+            this.props.login(username, password);
 
             // 请求成功时做出的响应
-            if (result.status === 0) {
-                // 登录成功
-                message.success("登录成功！你好" + result.data.username + "!");
-                // 保存用户信息到内存和本地
-                memoryUtils.user = result.data;
-                storageUtils.saveUser(result.data);
-                // 转跳到管理界面
-                this.props.history.replace(`/admin`);
-            } else {
-                // 登录失败
-                message.error("登陆失败！用户名或密码不正确！");
-            }
+            // if (result.status === 0) {
+            //     // 登录成功
+            //     message.success("登录成功！你好" + result.data.username + "!");
+            //     // 保存用户信息到内存和本地
+            //     memoryUtils.user = result.data;
+            //     storageUtils.saveUser(result.data);
+            //     // 转跳到管理界面
+            //     this.props.history.replace(`/admin/home`);
+            // } else {
+            //     // 登录失败
+            //     message.error("登陆失败！用户名或密码不正确！");
+            // }
         }
     );
 
     render() {
         // 如果用户已经登录，自动跳转到admin页面
-        const user = memoryUtils.user;
-        if(user && user._id) {
-            return <Redirect to="/admin"/>
+        // const user = memoryUtils.user;
+        const user = this.props.user;
+
+        if (user && user._id) {
+            return <Redirect to="/admin/home" />
         }
+
+        const errorMsg = this.props.user.errorMsg || "";
 
         return (
             <div className="login">
@@ -79,6 +88,7 @@ export default class Login extends Component {
                 </header>
 
                 <section className="login-section">
+                    <div>{errorMsg}</div>
                     <h2>用户登陆</h2>
                     <Form name="normal_login" className="login-form" initialValues={{ remember: true, }} onFinish={this.onFinish}>
 
@@ -130,3 +140,8 @@ export default class Login extends Component {
         )
     }
 }
+
+export default connect(
+    state => ({ user: state.user }),
+    { login }
+)(Login);

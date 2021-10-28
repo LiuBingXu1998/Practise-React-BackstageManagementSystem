@@ -1,13 +1,15 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router';
-import { Modal } from "antd"
+import { Modal } from "antd";
+import { connect } from 'react-redux';
 
 import LinkButton from '../linkButton/LinkButton';
 import { reqWeather } from "../../api/index";
 import timeTools from '../../utils/dataUtils';
-import memoryUtils from '../../utils/memoryUtils';
-import storageUtils from "../../utils/storageUtils"
-import menuList from "../../config/menuConfig";
+// import memoryUtils from '../../utils/memoryUtils';
+// import storageUtils from "../../utils/storageUtils"
+// import menuList from "../../config/menuConfig";
+import { logout } from "../../redux/actions";
 
 import "./Header.less";
 
@@ -44,26 +46,26 @@ class Header extends Component {
     /**
      * 自动更新title
      */
-    upDateTitle = () => {
-        let title;
-        // 获取当前路径
-        const path = this.props.location.pathname;
-        // 遍历比较
-        menuList.forEach(item => {
-            // 如果当前路径包含item的key 
-            if (item.key === path) {
-                title = item.title;
-            } else if (item.children) {
-                // 查找子item，匹配则取出
-                const cItem = item.children.find(cItem => path.search(cItem.key) !== -1)
-                // 如果cItem有值，说明找到了
-                if (cItem) {
-                    title = cItem.title;
-                }
-            }
-        })
-        return title;
-    }
+    // upDateTitle = () => {
+    //     let title;
+    //     // 获取当前路径
+    //     const path = this.props.location.pathname;
+    //     // 遍历比较
+    //     menuList.forEach(item => {
+    //         // 如果当前路径包含item的key 
+    //         if (item.key === path) {
+    //             title = item.title;
+    //         } else if (item.children) {
+    //             // 查找子item，匹配则取出
+    //             const cItem = item.children.find(cItem => path.search(cItem.key) !== -1)
+    //             // 如果cItem有值，说明找到了
+    //             if (cItem) {
+    //                 title = cItem.title;
+    //             }
+    //         }
+    //     })
+    //     return title;
+    // }
 
     /**
      * 退出登录
@@ -76,10 +78,11 @@ class Header extends Component {
             cancelText: '取消',
             onOk: () => {
                 // 清除登录信息
-                storageUtils.removeUser();
-                memoryUtils.user = {};
+                this.props.logout();
+                // storageUtils.removeUser();
+                // memoryUtils.user = {};
                 // 跳转login页面
-                this.props.history.replace("/login");
+                // this.props.history.replace("/login");
             },
         });
     }
@@ -95,13 +98,15 @@ class Header extends Component {
 
     render() {
         const { currentTime, weather, city } = this.state;
-        const user = memoryUtils.user.username;
-        const title = this.upDateTitle();
+        // const user = memoryUtils.user.username;
+        // const title = this.upDateTitle();
+        const user = this.props.user;
+        const title = this.props.headTitle;
 
         return (
             <div className="header">
                 <div className="header-top">
-                    <span>欢迎, <span className="userName">{user}</span></span>
+                    <span>欢迎, <span className="userName">{user.name}</span></span>
                     <LinkButton onClick={this.logout}> 退出 </LinkButton>
                 </div>
 
@@ -119,4 +124,10 @@ class Header extends Component {
     }
 }
 
-export default withRouter(Header);
+export default connect(
+    state => ({
+        headTitle: state.headTitle,
+        user: state.user,
+    }),
+    { logout }
+)(withRouter(Header));
